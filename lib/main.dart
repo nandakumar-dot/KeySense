@@ -50,7 +50,7 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
   late File _logFile;
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  static const Duration sensorInterval = Duration(milliseconds: 20);
+  static const Duration sensorInterval = Duration(milliseconds: 10);
 
   @override
   void initState() {
@@ -147,7 +147,7 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
       setState(() {
         _gyroscopeEvent = event;
         _gyroBuffer.add(event);
-        if (_gyroBuffer.length > 11) {
+        if (_gyroBuffer.length > 21) {
           _gyroBuffer.removeAt(0);
         }
       });
@@ -159,7 +159,7 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
       setState(() {
         _accelerometerEvent = event;
         _accelBuffer.add(event);
-        if (_accelBuffer.length > 11) {
+        if (_accelBuffer.length > 21) {
           _accelBuffer.removeAt(0);
         }
       });
@@ -171,7 +171,7 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
       setState(() {
         _magnetometerEvent = event;
         _magBuffer.add(event);
-        if (_magBuffer.length > 11) {
+        if (_magBuffer.length > 21) {
           _magBuffer.removeAt(0);
         }
       });
@@ -210,7 +210,7 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
       List<AccelerometerEvent> accelBefore = [];
       List<GyroscopeEvent> gyroBefore = [];
       List<MagnetometerEvent> magBefore = [];
-      for (int i = 5; i > 0; i--) {
+      for (int i = 20; i > 10; i--) {
         if (_accelBuffer.length >= i &&
             _gyroBuffer.length >= i &&
             _magBuffer.length >= i) {
@@ -226,14 +226,14 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
       var magDuring = _magnetometerEvent;
 
       // Delay to capture data after key press
-      if (accelBefore.length == 5 &&
-          gyroBefore.length == 5 &&
-          magBefore.length == 5) {
+      if (accelBefore.length == 10 &&
+          gyroBefore.length == 10 &&
+          magBefore.length == 10) {
         Future.delayed(sensorInterval, () {
           List<AccelerometerEvent> accelAfter = [];
           List<GyroscopeEvent> gyroAfter = [];
           List<MagnetometerEvent> magAfter = [];
-          for (int i = 0; i < 5; i++) {
+          for (int i = 0; i < 10; i++) {
             if (_accelBuffer.length > i &&
                 _gyroBuffer.length > i &&
                 _magBuffer.length > i) {
@@ -243,15 +243,15 @@ class _KeyLoggerScreenState extends State<KeyLoggerScreen> {
             }
           }
 
-          if (accelBefore.length == 5 &&
-              gyroBefore.length == 5 &&
-              magBefore.length == 5 &&
+          if (accelBefore.length == 10 &&
+              gyroBefore.length == 10 &&
+              magBefore.length == 10 &&
               accelDuring != null &&
               gyroDuring != null &&
               magDuring != null &&
-              accelAfter.length == 5 &&
-              gyroAfter.length == 5 &&
-              magAfter.length == 5) {
+              accelAfter.length == 10 &&
+              gyroAfter.length == 10 &&
+              magAfter.length == 10) {
             final logEntry =
                 '($key, Before: (${_formatSensorData(accelBefore, gyroBefore, magBefore)}), '
                 'During: (${gyroDuring.x}, ${gyroDuring.y}, ${gyroDuring.z}), '
